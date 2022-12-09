@@ -30,6 +30,7 @@ app.use("/api/stripe", checkRoute);
 //DB Connect
 mongoose
   .connect(process.env.CONNECTION_URL)
+
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Backend server ON, port: ${PORT}`);
