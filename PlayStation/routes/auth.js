@@ -46,10 +46,7 @@ router.post("/login", async (req, res) => {
     );
     const originalPassword = hashedPassword?.toString(CryptoJS.enc.Utf8);
 
-    if (
-      user.email === req.body.email &&
-      originalPassword === req.body.password
-    ) {
+    if (user && originalPassword === req.body.password) {
       const accessToken = jwt.sign(
         { id: user._id, isAdmin: user.isAdmin },
         process.env.JWT_SEC,
