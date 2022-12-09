@@ -5,18 +5,27 @@ const jwt = require("jsonwebtoken");
 
 //Register
 router.post("/register", async (req, res) => {
+  console.log(req);
   try {
     const newUser = new User({
-      // name: req.body.data.name,
-      // surname: req.body.data.surname,
-      // phone: req.body.data.phone,
-      // address: req.body.data.address,
-      username: req.body.username,
-      email: req.body.email,
+      email: req.body.formData.email,
       password: CryptoJS.AES.encrypt(
-        req.body.password,
+        req.body.formData.password,
         process.env.PASS_SEC
       ).toString(),
+
+      firstName: req.body.formData.firstName,
+      lastName: req.body.formData.lastName,
+      userName: req.body.formData.userName,
+
+      month: req.body.formData.month,
+      day: req.body.formData.day,
+      year: req.body.formData.year,
+
+      stateProvince: req.body.formData.stateProvince,
+      country: req.body.formData.country,
+      city: req.body.formData.city,
+      postalCode: req.body.formData.postalCode,
     });
     const savedUser = await newUser.save();
     res.status(200).json(savedUser);
@@ -28,14 +37,19 @@ router.post("/register", async (req, res) => {
 //Login
 router.post("/login", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    const user = await User.findOne({
+      email: req.body.email,
+    });
     const hashedPassword = CryptoJS.AES.decrypt(
       user?.password,
       process.env.PASS_SEC
     );
     const originalPassword = hashedPassword?.toString(CryptoJS.enc.Utf8);
 
-    if (user && originalPassword === req.body.password) {
+    if (
+      user.email === req.body.email &&
+      originalPassword === req.body.password
+    ) {
       const accessToken = jwt.sign(
         { id: user._id, isAdmin: user.isAdmin },
         process.env.JWT_SEC,

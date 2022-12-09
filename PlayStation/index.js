@@ -26,6 +26,7 @@ app.use("/api/auth", authRoute);
 //DB Connect
 mongoose
   .connect(process.env.CONNECTION_URL)
+
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Backend server ON, port: ${PORT}`);
