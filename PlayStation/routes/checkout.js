@@ -6,6 +6,13 @@ const MY_DOMAIN = 'http://localhost:3000/';
 
 
 router.post('/create-checkout-session', async (req, res) => {
+  const customer = await stripe.customers.create({
+    metadata: {
+      userId: JSON.stringify(req.body.userId),
+      cart: JSON.stringify(req.body.product),
+      quantities: JSON.stringify(req.body.counter),
+    }
+  })
   const line_items = req.body.product.map((item) => {
     return {
       price_data: {
@@ -80,6 +87,7 @@ router.post('/create-checkout-session', async (req, res) => {
       phone_number_collection: {
         enabled: true
       },
+      customer: customer.id,
       line_items,
       mode: 'payment',
       success_url: `${MY_DOMAIN}products?success=true`,

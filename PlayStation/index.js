@@ -9,7 +9,8 @@ dotenv.config();
 
 const userRoute = require("./routes/user");
 const authRoute = require("./routes/auth");
-const checkRoute = require("./routes/checkout")
+const checkRoute = require("./routes/checkout");
+const orderRoute = require("./routes/order");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,12 +21,14 @@ app.use(
     credentials: true,
   })
 );
+app.use("/api/stripe/webhook", express.raw({ type: "*/*" }))
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/stripe", checkRoute);
+app.use("/api/stripe", orderRoute);
 
 //DB Connect
 mongoose
